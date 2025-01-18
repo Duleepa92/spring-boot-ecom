@@ -24,8 +24,8 @@ pipeline { // must be top-level
 		
 		stage("test") {
 			when { //Only if this condition is true go to the steps.
-				params.executeTests == true 
-				expression {BRANCH_NAME == 'master' || BRANCH_NAME == 'dev'}
+				params.executeTests
+				// expression {BRANCH_NAME == 'master' || BRANCH_NAME == 'dev'}
 			}
 			steps {
 				echo 'testing the application...'
