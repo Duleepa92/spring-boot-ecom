@@ -24,7 +24,7 @@ pipeline { // must be top-level
 		
 		stage("test") {
 			when { //Only if this condition is true go to the steps.
-				params.executeTests
+				params.executeTests == true &&
 				allOf {
 					expression {
 						BRANCH_NAME == 'master' || BRANCH_NAME == 'dev'
