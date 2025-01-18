@@ -18,21 +18,14 @@ pipeline { // must be top-level
 			steps {
 				echo "building version ${NEW_VERSION}"
 				echo 'building the application...'
-				gradle build
+				// gradle build
 			}
 		}
 		
 		stage("test") {
 			when { //Only if this condition is true go to the steps.
-				params.executeTests == true &&
-				allOf {
-					expression {
-						BRANCH_NAME == 'master' || BRANCH_NAME == 'dev'
-					}
-					expression {
-						0 > 1
-					}
-				}
+				params.executeTests == true 
+				expression {BRANCH_NAME == 'master' || BRANCH_NAME == 'dev'}
 			}
 			steps {
 				echo 'testing the application...'
