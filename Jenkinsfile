@@ -3,7 +3,7 @@ pipeline { // must be top-level
 	parameters { //Parameterize your Build
 		string(name: 'VERSION', defaultValue: '', description: 'version to deploy on prod.')
 		choice(name: 'VERSION', choices: ['1.1.0','1.2.0','1.3.0'], description: "")
-		booleanParam(name:'executeTests', defaultVale: true, description: '')
+		booleanParam(name:'executeTests', defaultValue: true, description: '')
 	}
 	tools { // Access build tools for you project
 		gradle 'Gradle'
@@ -24,10 +24,13 @@ pipeline { // must be top-level
 		
 		stage("test") {
 			when { //Only if this condition is true go to the steps.
+				params.executeTests
 				allOf {
-					params.executeTests
 					expression {
 						BRANCH_NAME == 'master' || BRANCH_NAME == 'dev'
+					}
+					expression {
+						0 > 1
 					}
 				}
 			}
@@ -53,13 +56,13 @@ pipeline { // must be top-level
 	}
 	post { // execute some login AFTER all stages executed
 		always {
-			
+			echo "I'm in always"
 		}
 		success {
-			
+			echo "I'm in success"
 		}
 		failure {
-			
+			echo "I'm in failure"
 		}
 	}
 }
