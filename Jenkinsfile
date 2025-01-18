@@ -1,3 +1,5 @@
+def gv
+
 pipeline { // must be top-level
 	agent any // where to execute
 	parameters { //Parameterize your Build
@@ -13,11 +15,20 @@ pipeline { // must be top-level
 		SERVER_CREDENTIALS = credentials('87e0d222-48f3-4f16-a743-d371538f1236')
 	}
 	stages { // where the "work" happens
+	
+		stage("init") {
+			steps {
+				script {
+					gv = load "script.groovy"
+				}
+			}
+		}
 		
 		stage("build") {
 			steps {
-				echo "building version ${NEW_VERSION}"
-				echo 'building the application...'
+				script {
+					gv.bildApp()
+				}
 				// gradle build
 			}
 		}
@@ -30,22 +41,24 @@ pipeline { // must be top-level
 				// expression {BRANCH_NAME == 'master' || BRANCH_NAME == 'dev'}
 			}
 			steps {
-				echo 'testing the application...'
+				script {
+					gv.testApp()
+				}
 			}
 		}
 		
 		stage("deploy") {
 			
 			steps {
-				echo 'deploying the application...'
-				echo "deploying with credentials ${SERVER_CREDENTIALS}"
-				withCredentials([
-					usernamePassword(credentials: '87e0d222-48f3-4f16-a743-d371538f1236', usernameVariable: USER, passwordVariable: PWD)
-				]){
-					//sh "some script ${USER} ${PWD}"
-					echo "${USER} ${PWD}"
+				script {
+					gv.deployApp()
 				}
-				echo "deploying version ${params.VERSION}"
+				//withCredentials([
+				//	usernamePassword(credentials: '87e0d222-48f3-4f16-a743-d371538f1236', usernameVariable: USER, passwordVariable: PWD)
+				//]){
+					//sh "some script ${USER} ${PWD}"
+				//	echo "${USER} ${PWD}"
+				//}
 			}
 		}
 	}
